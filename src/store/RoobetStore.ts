@@ -42,7 +42,7 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
 			const start = startDate || firstDay;
 			const end = endDate || lastDay;
 
-			let url = `https://louiskhzdata-production-3897.up.railway.app/api/leaderboard/${start}/${end}`;
+			let url = `https://tacodata-production.up.railway.app/api/leaderboard/${start}/${end}`;
 
 			const response = await axios.get(url);
 
