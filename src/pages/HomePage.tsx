@@ -52,15 +52,21 @@ const HomePage = () => {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="flex flex-wrap justify-center gap-5 mt-10"
           >
-            <Button className="bg-[#547E25] hover:bg-[#EFA813] hover:text-[#040704] text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-[#EFA813]/40 transition-all">
-              Join Leaderboard
-            </Button>
             <Button
-              variant="outline"
-              className="border-2 border-[#EFA813] text-[#EFA813] hover:bg-[#EFA813] hover:text-[#040704] px-8 py-4 rounded-2xl text-lg font-semibold transition-all"
-            >
-              Claim Bonus
-            </Button>
+  className="bg-[#547E25] hover:bg-[#EFA813] hover:text-[#040704] text-white px-8 py-4 rounded-2xl text-lg font-semibold shadow-lg hover:shadow-[#EFA813]/40 transition-all"
+  onClick={() => window.open("https://roobet.com/?ref=tacopoju", "_blank")}
+>
+  Join Leaderboard
+</Button>
+
+<Button
+  variant="outline"
+  className="border-2 border-[#EFA813] text-[#EFA813] hover:bg-[#EFA813] hover:text-[#040704] px-8 py-4 rounded-2xl text-lg font-semibold transition-all"
+  onClick={() => window.open("https://discord.gg/GTZK29pBAZ", "_blank")}
+>
+  Claim Bonus
+</Button>
+
           </motion.div>
         </section>
 
