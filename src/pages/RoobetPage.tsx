@@ -1,183 +1,245 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRoobetStore } from "../store/RoobetStore";
-import GraphicalBackground from "@/components/GraphicalBackground";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
+import { Button } from "@/components/ui/button";
 
 const RoobetPage: React.FC = () => {
-	const { leaderboard, loading, error, fetchLeaderboard } = useRoobetStore();
+  const { leaderboard, loading, error, fetchLeaderboard } = useRoobetStore();
 
-	useEffect(() => {
-		fetchLeaderboard();
-	}, [fetchLeaderboard]);
+  const [timeLeft, setTimeLeft] = useState({
+    days: 1,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
 
-	return (
-		<div className='relative flex flex-col min-h-screen'>
-			<GraphicalBackground />
-			<Navbar />
+  // Countdown timer simulation (adjust as needed)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft((prev) => {
+        let { days, hours, minutes, seconds } = prev;
+        if (seconds > 0) seconds--;
+        else if (minutes > 0) {
+          minutes--;
+          seconds = 59;
+        } else if (hours > 0) {
+          hours--;
+          minutes = 59;
+          seconds = 59;
+        } else if (days > 0) {
+          days--;
+          hours = 23;
+          minutes = 59;
+          seconds = 59;
+        }
+        return { days, hours, minutes, seconds };
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
 
-			<main className='relative z-10 flex-grow w-full max-w-6xl px-6 py-10 mx-auto'>
-				<h1 className='mb-8 text-4xl font-extrabold text-center text-[#fefefe] drop-shadow-lg'>
-					🎰 Roobet Leaderboard
-				</h1>
+  useEffect(() => {
+    fetchLeaderboard();
+  }, [fetchLeaderboard]);
 
-				{loading && (
-					<p className='text-center text-[#fefefe]'>Loading leaderboard...</p>
-				)}
-				{error && <p className='text-center text-[#e10600]'>{error}</p>}
+  return (
+    <div className="relative flex flex-col min-h-screen text-white overflow-hidden">
+      {/* 🎬 Same Background as HomePage */}
+      <div
+        className="fixed inset-0 bg-contain bg-center bg-no-repeat opacity-70 z-0"
+        style={{
+          backgroundImage: `url('https://i.ibb.co/XrDRLV7S/acloseupof-subject-1-smokingacigarettewiththesmokemoving-ezgif-com-gif-maker.gif')`,
+          backgroundColor: "#000", // fills gaps if GIF doesn’t cover fully
+        }}
+      ></div>
 
-				{leaderboard && (
-					<>
-						<p className='mb-6 text-sm italic text-[#fefefe] text-center'>
-							{leaderboard.disclosure}
-						</p>
+      {/* Gradient Overlay for readability */}
+      <div className="fixed inset-0 bg-gradient-to-b from-[#040704]/80 via-[#040704]/90 to-[#040704] z-0"></div>
 
-						{/* Prize Pool Section */}
-						<section className='mb-12'>
-							<h2 className='mb-6 text-2xl font-bold text-center text-[#e10600]'>
-								Leaderboard Prizes ($250 Total)
-							</h2>
-							<div className='grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-5'>
-								<PrizeCard
-									position='1st'
-									prize='$125'
-									color='from-yellow-500 to-orange-600'
-								/>
-								<PrizeCard
-									position='2nd'
-									prize='$75'
-									color='from-gray-400 to-gray-600'
-								/>
-								<PrizeCard
-									position='3rd'
-									prize='$25'
-									color='from-amber-700 to-yellow-800'
-								/>
-								<PrizeCard
-									position='4th'
-									prize='$12.5'
-									color='from-[#444] to-[#666]'
-								/>
-								<PrizeCard
-									position='5th'
-									prize='$12.5'
-									color='from-[#333] to-[#555]'
-								/>
-							</div>
-						</section>
+      {/* Content Layer */}
+      <div className="relative z-10">
+        <Navbar />
 
-						{/* Top 3 Players as Cards */}
-						<div className='grid grid-cols-1 gap-6 mb-10 md:grid-cols-3'>
-							{leaderboard.data.slice(0, 3).map((player) => (
-								<div
-									key={player.uid}
-									className='relative p-6 rounded-3xl shadow-2xl border-4 border-[#e10600] flex flex-col items-center justify-center
-                              bg-gradient-to-br from-[#e10600] to-[#030303] hover:scale-105 transform transition-all duration-300'
-								>
-									{/* Rank Badge */}
-									<div className='absolute -top-4 right-4 w-12 h-12 flex items-center justify-center rounded-full bg-[#fefefe] text-[#e10600] font-bold text-lg shadow-lg'>
-										#{player.rankLevel}
-									</div>
+        <main className="relative z-10 flex-grow w-full px-6 py-12 mx-auto max-w-7xl text-center">
+          {/* HEADER SECTION */}
+          <h1 className="text-5xl md:text-6xl font-extrabold text-[#EFA813] mb-4">
+            $1000 ROOBET LEADERBOARD
+          </h1>
+          <p className="text-[#EFA813]/80 mb-8 text-lg">
+            Use code <span className="font-bold text-[#E84D06]">"tacopoju"</span> to compete for top spots and win prizes!
+          </p>
 
-									{/* Username */}
-									<p className='text-2xl md:text-3xl font-extrabold text-[#fefefe] mb-2 drop-shadow-lg'>
-										{player.username}
-									</p>
+          {/* ACTION BUTTONS */}
+          <div className="flex items-center justify-center gap-4 mb-10">
+            <Button className="bg-[#E84D06] hover:bg-[#EFA813] text-white px-6 py-3 rounded-full font-semibold shadow-lg">
+              Join Now
+            </Button>
+            <Button className="bg-transparent border border-[#EFA813] hover:bg-[#EFA813]/10 text-[#EFA813] px-6 py-3 rounded-full font-semibold">
+              How It Works
+            </Button>
+          </div>
 
-									{/* Stats */}
-									<div className='flex flex-col items-center gap-1 mt-2'>
-										<p className='text-md md:text-lg font-semibold text-[#fefefe]'>
-											🎲 Wagered:{" "}
-											<span className='text-[#e10600]'>
-												{player.wagered.toLocaleString()}
-											</span>
-										</p>
-										<p className='text-md md:text-lg font-semibold text-[#fefefe]'>
-											⚡ Weighted:{" "}
-											<span className='text-[#e10600]'>
-												{player.weightedWagered.toLocaleString()}
-											</span>
-										</p>
-									</div>
+          {loading && <p className="text-center text-[#EFA813]">Loading leaderboard...</p>}
+          {error && <p className="text-center text-[#E84D06]">{error}</p>}
 
-									{/* Favorite Game */}
-									<p className='mt-3 text-sm md:text-base font-medium text-[#fefefe] italic'>
-										Favorite: {player.favoriteGameTitle}
-									</p>
+          {leaderboard && (
+            <>
+              {/* 🏆 TOP 3 PLAYERS */}
+              <div className="flex flex-col md:flex-row justify-center items-end gap-10 mb-16">
+                {[
+                  leaderboard.data[1], // 2nd place (left)
+                  leaderboard.data[0], // 1st place (center)
+                  leaderboard.data[2], // 3rd place (right)
+                ].map((player, idx) => {
+                  const rank = player.rankLevel;
 
-									{/* Reward */}
-									<p className='mt-4 text-lg font-bold text-[#e10600]'>
-										{player.rankLevel === 1 && "$125 Prize"}
-										{player.rankLevel === 2 && "$75 Prize"}
-										{player.rankLevel === 3 && "$25 Prize"}
-									</p>
-								</div>
-							))}
-						</div>
+                  const isWinner = rank === 1;
 
-						{/* Remaining Players in Table */}
-						{leaderboard.data.length > 3 && (
-							<div className='overflow-x-auto p-6 shadow-lg bg-[#030303]/80 backdrop-blur-md rounded-2xl'>
-								<table className='w-full text-left border-collapse'>
-									<thead className='text-sm tracking-wide text-[#fefefe] uppercase bg-[#e10600]'>
-										<tr>
-											<th className='p-3'>Rank</th>
-											<th className='p-3'>Username</th>
-											<th className='p-3'>Wagered</th>
-											<th className='p-3'>Weighted Wagered</th>
-											<th className='p-3'>Favorite Game</th>
-											<th className='p-3'>Prize</th>
-										</tr>
-									</thead>
-									<tbody>
-										{leaderboard.data.slice(3).map((player) => (
-											<tr
-												key={player.uid}
-												className='transition hover:bg-[#e10600]/80 bg-[#030303]/50 text-[#fefefe]'
-											>
-												<td className='p-3 font-bold'>{player.rankLevel}</td>
-												<td className='p-3 font-semibold'>{player.username}</td>
-												<td className='p-3'>
-													{player.wagered.toLocaleString()}
-												</td>
-												<td className='p-3'>
-													{player.weightedWagered.toLocaleString()}
-												</td>
-												<td className='p-3'>{player.favoriteGameTitle}</td>
-												<td className='p-3'>
-													{player.rankLevel === 4 && "$12.5"}
-													{player.rankLevel === 5 && "$12.5"}
-													{player.rankLevel > 5 && "-"}
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						)}
-					</>
-				)}
-			</main>
+                  // Podium elevation (1st highest, 2nd slightly lower, 3rd lowest)
+                  const translateY =
+                    rank === 1 ? "translate-y-0" : rank === 2 ? "translate-y-6" : "translate-y-10";
 
-			<Footer />
-		</div>
-	);
+                  // Border + glow
+                  const borderColor =
+                    rank === 1
+                      ? "border-[#EFA813]"
+                      : rank === 2
+                      ? "border-[#547E25]"
+                      : "border-[#E84D06]";
+
+                  const glowColor =
+                    rank === 1
+                      ? "shadow-[0_0_40px_rgba(239,168,19,0.5)]"
+                      : rank === 2
+                      ? "shadow-[0_0_35px_rgba(84,126,37,0.4)]"
+                      : "shadow-[0_0_35px_rgba(232,77,6,0.4)]";
+
+                  const prizeText =
+                    rank === 1 ? "$125 Prize 🥇" : rank === 2 ? "$75 Prize 🥈" : "$25 Prize 🥉";
+
+                  return (
+                    <div
+                      key={player.uid}
+                      className={`relative w-full max-w-[280px] bg-[#0c0c0c]/95 border-2 ${borderColor} rounded-3xl overflow-hidden backdrop-blur-lg ${glowColor} transform ${translateY} transition-all duration-500 hover:scale-105`}
+                    >
+                      {/* RANK BADGE */}
+                      <div
+                        className={`absolute top-3 left-1/2 -translate-x-1/2 px-6 py-1.5 rounded-full font-extrabold text-black text-lg tracking-wide ${
+                          rank === 1
+                            ? "bg-gradient-to-r from-[#EFA813] to-[#E84D06]"
+                            : "bg-[#E84D06]"
+                        }`}
+                      >
+                        #{rank}
+                      </div>
+
+                      {/* CONTENT */}
+                      <div className="p-8 flex flex-col items-center text-center">
+                        {/* Avatar */}
+                        <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#EFA813]/25 to-transparent border border-[#EFA813]/40 flex items-center justify-center mb-5">
+                          <span className="text-4xl font-extrabold text-[#EFA813] uppercase">
+                            {player.username[0]}
+                          </span>
+                        </div>
+
+                        {/* Player Info */}
+                        <h2 className="text-xl font-extrabold text-white mb-1 break-all">
+                          {player.username}
+                        </h2>
+
+                        <p className="text-[#E84D06] font-semibold text-lg mb-1">
+                          ${player.wagered.toLocaleString()}
+                        </p>
+
+                        <p className="text-sm text-[#EFA813]/70 italic mb-4">
+                          Weighted: {player.weightedWagered.toLocaleString()}
+                        </p>
+
+                        {/* Prize */}
+                        <div
+                          className={`font-bold text-base px-6 py-2 rounded-full ${
+                            rank === 1
+                              ? "bg-gradient-to-r from-[#EFA813] to-[#E84D06] text-black"
+                              : "bg-[#EFA813]/10 text-[#EFA813]"
+                          }`}
+                        >
+                          {prizeText}
+                        </div>
+                      </div>
+
+                      {/* Bottom Accent Line */}
+                      <div
+                        className={`absolute bottom-0 left-0 right-0 h-[5px] ${
+                          rank === 1
+                            ? "bg-gradient-to-r from-[#EFA813] via-[#E84D06] to-[#EFA813]"
+                            : "bg-gradient-to-r from-[#E84D06]/70 to-transparent"
+                        }`}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* COUNTDOWN SECTION */}
+              <div className="mb-12">
+                <h3 className="text-2xl text-[#EFA813] font-bold mb-2">Leaderboard Ends In</h3>
+                <div className="flex justify-center gap-4 text-2xl font-extrabold text-[#E84D06]">
+                  <TimerBox label="Days" value={timeLeft.days} />
+                  <TimerBox label="Hours" value={timeLeft.hours} />
+                  <TimerBox label="Minutes" value={timeLeft.minutes} />
+                  <TimerBox label="Seconds" value={timeLeft.seconds} />
+                </div>
+              </div>
+
+              {/* LEADERBOARD TABLE */}
+              {leaderboard.data.length > 3 && (
+                <div className="overflow-x-auto bg-[#0a0a0a]/80 backdrop-blur-md rounded-2xl border border-[#547E25] shadow-lg">
+                  <table className="w-full border-collapse text-left">
+                    <thead className="bg-[#EFA813] text-[#040704] uppercase text-sm">
+                      <tr>
+                        <th className="p-4">Rank</th>
+                        <th className="p-4">Player</th>
+                        <th className="p-4">Wagered</th>
+                        <th className="p-4">Prize</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {leaderboard.data.slice(3).map((player) => (
+                        <tr
+                          key={player.uid}
+                          className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/20 transition-all"
+                        >
+                          <td className="p-4 font-bold text-[#EFA813]">#{player.rankLevel}</td>
+                          <td className="p-4 font-semibold">{player.username}</td>
+                          <td className="p-4">${player.wagered.toLocaleString()}</td>
+                          <td className="p-4 text-[#547E25] font-semibold">
+                            {player.rankLevel === 4 && "$12.5"}
+                            {player.rankLevel === 5 && "$12.5"}
+                            {player.rankLevel > 5 && "$0.00"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </>
+          )}
+        </main>
+
+        <Footer />
+      </div>
+    </div>
+  );
 };
 
-// Simple Prize Card
-interface PrizeCardProps {
-	position: string;
-	prize: string;
-	color: string;
-}
-
-const PrizeCard: React.FC<PrizeCardProps> = ({ position, prize, color }) => (
-	<div
-		className={`p-6 rounded-xl shadow-lg text-center font-bold text-[#fefefe] bg-gradient-to-br ${color}`}
-	>
-		<h3 className='mb-2 text-xl'>{position} Place</h3>
-		<p className='text-lg'>{prize}</p>
-	</div>
+// Timer component
+const TimerBox = ({ label, value }: { label: string; value: number }) => (
+  <div className="flex flex-col items-center bg-[#EFA813]/10 px-4 py-2 rounded-xl">
+    <span className="text-3xl">{String(value).padStart(2, "0")}</span>
+    <span className="text-xs uppercase text-[#EFA813]/70">{label}</span>
+  </div>
 );
 
 export default RoobetPage;

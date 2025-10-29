@@ -45,7 +45,7 @@ function App() {
 					<Route path='/slot-overlay' element={<SlotOverlay />} />
 					<Route path='/bonus-hunt' element={<BonusHuntPage />} />
 					*/}
-					<Route path='/Leaderboard' element={<LeaderboardPage />} />
+					<Route path='/Leaderboard' element={<RoobetPage />} />
 					<Route path='/RoobetPage' element={<RoobetPage />} /> 
 					
 					

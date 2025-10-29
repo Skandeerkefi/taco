@@ -28,7 +28,7 @@ export function Footer() {
 							{[
 								{ to: "/", label: "Home" },
 								{ to: "/bonuses", label: "Bonuses" },
-								{ to: "/leaderboards", label: "Leaderboards" },
+								{ to: "/RoobetPage", label: "Leaderboards" },
 							].map(({ to, label }) => (
 								<Link
 									key={label}
@@ -47,22 +47,22 @@ export function Footer() {
 						<div className='flex gap-3'>
 							{[
 								{
-									href: "https://discord.gg/kingonkick",
+									href: "https://discord.gg/GTZK29pBAZ",
 									icon: <FaDiscord className='w-5 h-5' />,
 									label: "Discord"
 								},
 								{
-									href: "https://www.instagram.com/kingonkick",
+									href: "https://www.instagram.com/tacopoju/",
 									icon: <FaInstagram className='w-5 h-5' />,
 									label: "Instagram"
 								},
 								{
-									href: "https://kick.com/King",
+									href: "https://kick.com/tacopoju",
 									icon: <FaKickstarterK className='w-5 h-5' />,
 									label: "Kick"
 								},
 								{
-									href: "https://x.com/Mister7ee",
+									href: "https://x.com/TACOPOJU",
 									icon: <FaXTwitter className='w-5 h-5' />,
 									label: "Twitter"
 								},
