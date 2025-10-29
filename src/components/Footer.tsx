@@ -7,34 +7,33 @@ export function Footer() {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className='bg-[#010102] border-t border-[#1a1a1d] text-[#fffcf5]'>
+		<footer className='bg-[#040704] border-t border-[#547E25]/30 text-[#fffcf5]'>
 			<div className='container px-6 py-12 mx-auto'>
 				<div className='grid grid-cols-1 gap-10 md:grid-cols-3'>
-					{/* About */}
+					{/* Gambling Warning */}
 					<div>
-						<h3 className='mb-3 text-lg font-bold text-[#fffcf5]'>King</h3>
-						<p className='text-sm text-[#fffcf5]/70'>
-							Join King&apos;s community for exciting gambling streams,
-							giveaways, and more. Use affiliate code{" "}
-							<span className='font-semibold text-[#c63427]'>DonkeyG</span> on
-							Roobet.
-						</p>
+						<h3 className='mb-3 text-lg font-bold text-[#EFA813]'>BEWARE GAMBLING</h3>
+						<div className='text-sm text-[#fffcf5]/80 space-y-2'>
+							<p>We are not responsible for illegal gambling activities.</p>
+							<p>Play responsibly. Gambling involves financial risks.</p>
+							<p>Ensure compliance with your local laws before engaging in any activities.</p>
+							<p>Seek help if you experience issues related to gambling.</p>
+						</div>
 					</div>
 
 					{/* Quick Links */}
 					<div>
-						<h3 className='mb-3 text-lg font-bold text-[#fffcf5]'>Links</h3>
-						<div className='grid grid-cols-2 gap-2'>
+						<h3 className='mb-3 text-lg font-bold text-[#EFA813]'>Quick Links</h3>
+						<div className='grid grid-cols-1 gap-2'>
 							{[
 								{ to: "/", label: "Home" },
-								{ to: "/leaderboards", label: "Leaderboard" },
-								{ to: "/terms", label: "Terms & Conditions" },
-								{ to: "/privacy", label: "Privacy Policy" },
+								{ to: "/bonuses", label: "Bonuses" },
+								{ to: "/leaderboards", label: "Leaderboards" },
 							].map(({ to, label }) => (
 								<Link
 									key={label}
 									to={to}
-									className='text-sm text-[#fffcf5]/70 hover:text-[#2474a9] transition-colors'
+									className='text-sm text-[#fffcf5]/80 hover:text-[#EFA813] transition-colors duration-200'
 								>
 									{label}
 								</Link>
@@ -42,34 +41,39 @@ export function Footer() {
 						</div>
 					</div>
 
-					{/* Social */}
+					{/* Social Links */}
 					<div>
-						<h3 className='mb-3 text-lg font-bold text-[#fffcf5]'>Connect</h3>
+						<h3 className='mb-3 text-lg font-bold text-[#EFA813]'>Social Links</h3>
 						<div className='flex gap-3'>
 							{[
 								{
-									href: "https://kick.com/King",
-									icon: <FaKickstarterK className='w-5 h-5' />,
-								},
-								{
-									href: "https://x.com/Mister7ee",
-									icon: <FaXTwitter className='w-5 h-5' />,
-								},
-								{
 									href: "https://discord.gg/kingonkick",
 									icon: <FaDiscord className='w-5 h-5' />,
+									label: "Discord"
 								},
 								{
 									href: "https://www.instagram.com/kingonkick",
 									icon: <FaInstagram className='w-5 h-5' />,
+									label: "Instagram"
 								},
-							].map(({ href, icon }, i) => (
+								{
+									href: "https://kick.com/King",
+									icon: <FaKickstarterK className='w-5 h-5' />,
+									label: "Kick"
+								},
+								{
+									href: "https://x.com/Mister7ee",
+									icon: <FaXTwitter className='w-5 h-5' />,
+									label: "Twitter"
+								},
+							].map(({ href, icon, label }, i) => (
 								<a
 									key={i}
 									href={href}
+									aria-label={label}
 									target='_blank'
 									rel='noreferrer'
-									className='flex items-center justify-center w-9 h-9 rounded-full bg-[#111] text-[#fffcf5] transition-all hover:bg-[#c63427] hover:scale-110'
+									className='flex items-center justify-center w-9 h-9 rounded-full bg-[#547E25]/20 text-[#fffcf5] transition-all hover:bg-[#EFA813] hover:text-[#040704] hover:scale-110 duration-200'
 								>
 									{icon}
 								</a>
@@ -79,16 +83,16 @@ export function Footer() {
 				</div>
 
 				{/* Bottom Bar */}
-				<div className='pt-6 mt-12 border-t border-[#1a1a1d] text-center text-sm text-[#fffcf5]/60'>
+				<div className='pt-6 mt-12 border-t border-[#547E25]/30 text-center text-sm text-[#fffcf5]/70'>
 					<p className='flex flex-wrap items-center justify-center gap-1'>
-						© {currentYear} King. Made with
-						<Heart className='w-3 h-3 mx-1 text-[#c63427]' />
-						for the community by{" "}
+						© {currentYear} TACOPOJU.Site. All rights reserved. Made with
+						<Heart className='w-3 h-3 mx-1 text-[#EFA813]' />
+						by{" "}
 						<a
 							href='https://www.linkedin.com/in/skander-kefi/'
 							target='_blank'
 							rel='noreferrer'
-							className='font-medium text-[#fffcf5] hover:text-[#2474a9] transition-colors'
+							className='font-medium text-[#fffcf5] hover:text-[#EFA813] transition-colors duration-200'
 						>
 							Skander
 						</a>
