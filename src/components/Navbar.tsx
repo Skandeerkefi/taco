@@ -116,7 +116,7 @@ export function Navbar() {
 
                         {/* CTA Button: Join Discord - Vibrant Highlight Color (#E84D06) */}
                         <a 
-                            href="https://discord.gg/yourserver" 
+                            href="https://discord.gg/GTZK29pBAZ" 
                             target="_blank" 
                             rel="noopener noreferrer"
                             className='hidden md:flex items-center space-x-2 
