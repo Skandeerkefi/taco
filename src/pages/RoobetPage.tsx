@@ -3,9 +3,18 @@ import { useRoobetStore } from "../store/RoobetStore";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"; // ✅ make sure shadcn dialog is available
+import { Info } from "lucide-react";
 
 const RoobetPage: React.FC = () => {
   const { leaderboard, loading, error, fetchLeaderboard } = useRoobetStore();
+  const [showHowItWorks, setShowHowItWorks] = useState(false);
 
   const [timeLeft, setTimeLeft] = useState({
     days: 1,
@@ -77,10 +86,19 @@ const RoobetPage: React.FC = () => {
 
           {/* Buttons */}
           <div className="flex items-center justify-center gap-4 mb-10">
-            <Button className="bg-[#E84D06] hover:bg-[#EFA813] text-white px-6 py-3 rounded-full font-semibold shadow-lg">
+            <Button
+              className="bg-[#E84D06] hover:bg-[#EFA813] text-white px-6 py-3 rounded-full font-semibold shadow-lg"
+              onClick={() =>
+                window.open("https://roobet.com/?ref=tacopoju", "_blank", "noopener noreferrer")
+              }
+            >
               Join Now
             </Button>
-            <Button className="bg-transparent border border-[#EFA813] hover:bg-[#EFA813]/10 text-[#EFA813] px-6 py-3 rounded-full font-semibold">
+            <Button
+              className="bg-transparent border border-[#EFA813] hover:bg-[#EFA813]/10 text-[#EFA813] px-6 py-3 rounded-full font-semibold flex items-center gap-2"
+              onClick={() => setShowHowItWorks(true)}
+            >
+              <Info className="w-4 h-4" />
               How It Works
             </Button>
           </div>
@@ -94,25 +112,20 @@ const RoobetPage: React.FC = () => {
             <div className="flex flex-col md:flex-row justify-center items-end gap-10 mb-16">
               {topPlayers.map((player) => {
                 const rank = player.rankLevel;
-                const isWinner = rank === 1;
-
                 const translateY =
                   rank === 1 ? "translate-y-0" : rank === 2 ? "translate-y-6" : "translate-y-10";
-
                 const borderColor =
                   rank === 1
                     ? "border-[#EFA813]"
                     : rank === 2
                     ? "border-[#547E25]"
                     : "border-[#E84D06]";
-
                 const glowColor =
                   rank === 1
                     ? "shadow-[0_0_40px_rgba(239,168,19,0.5)]"
                     : rank === 2
                     ? "shadow-[0_0_35px_rgba(84,126,37,0.4)]"
                     : "shadow-[0_0_35px_rgba(232,77,6,0.4)]";
-
                 const prizeText =
                   rank === 1 ? "$125 Prize 🥇" : rank === 2 ? "$75 Prize 🥈" : "$25 Prize 🥉";
 
@@ -121,7 +134,6 @@ const RoobetPage: React.FC = () => {
                     key={player.uid}
                     className={`relative w-full max-w-[280px] bg-[#0c0c0c]/95 border-2 ${borderColor} rounded-3xl overflow-hidden backdrop-blur-lg ${glowColor} transform ${translateY} transition-all duration-500 hover:scale-105`}
                   >
-                    {/* Rank Badge */}
                     <div
                       className={`absolute top-3 left-1/2 -translate-x-1/2 px-6 py-1.5 rounded-full font-extrabold text-black text-lg tracking-wide ${
                         rank === 1
@@ -132,7 +144,6 @@ const RoobetPage: React.FC = () => {
                       #{rank}
                     </div>
 
-                    {/* Player Card */}
                     <div className="p-8 flex flex-col items-center text-center">
                       <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#EFA813]/25 to-transparent border border-[#EFA813]/40 flex items-center justify-center mb-5">
                         <span className="text-4xl font-extrabold text-[#EFA813] uppercase">
@@ -162,8 +173,6 @@ const RoobetPage: React.FC = () => {
                         {prizeText}
                       </div>
                     </div>
-
-                    {/* Accent line */}
                     <div
                       className={`absolute bottom-0 left-0 right-0 h-[5px] ${
                         rank === 1
@@ -231,6 +240,28 @@ const RoobetPage: React.FC = () => {
 
         <Footer />
       </div>
+
+      {/* 🪟 HOW IT WORKS MODAL */}
+      <Dialog open={showHowItWorks} onOpenChange={setShowHowItWorks}>
+        <DialogContent className="bg-[#0a0a0a] border border-[#EFA813]/30 text-white max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-[#EFA813] text-2xl font-bold text-center">
+              How the Leaderboard Works
+            </DialogTitle>
+            <DialogDescription className="text-[#EFA813]/80 text-center mb-4">
+              Weighted wagers based on RTP determine your leaderboard score.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 text-[#fffefe]/90">
+            <p>🎯 Games with an RTP of <strong>97% or less</strong> contribute <strong className="text-[#EFA813]">100%</strong> of the wagered amount.</p>
+            <p>🎯 Games with an RTP <strong>above 97%</strong> contribute <strong className="text-[#EFA813]">50%</strong>.</p>
+            <p>🎯 Games with an RTP of <strong>98% and above</strong> contribute <strong className="text-[#EFA813]">10%</strong>.</p>
+            <p className="text-sm border-t border-[#EFA813]/30 pt-3">
+              ⚠️ Only <strong>Slots</strong> and <strong>Housegames</strong> count (Dice excluded).
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
