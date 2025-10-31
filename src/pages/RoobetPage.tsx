@@ -46,10 +46,12 @@ const RoobetPage: React.FC = () => {
 
   // Fetch leaderboard for the current month
   useEffect(() => {
-    const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
-    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
-    fetchLeaderboard(startDate, endDate);
-  }, [fetchLeaderboard, now]);
+  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
+  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+  fetchLeaderboard(startDate, endDate);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []); // ✅ fetch only once when page loads
+
 
   const topTenPlayers = leaderboard?.data ? leaderboard.data.slice(0, 10) : [];
 
