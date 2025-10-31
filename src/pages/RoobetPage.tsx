@@ -9,53 +9,49 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-} from "@/components/ui/dialog"; // ✅ make sure shadcn dialog is available
+} from "@/components/ui/dialog";
 import { Info } from "lucide-react";
 
 const RoobetPage: React.FC = () => {
   const { leaderboard, loading, error, fetchLeaderboard } = useRoobetStore();
   const [showHowItWorks, setShowHowItWorks] = useState(false);
 
-  const [timeLeft, setTimeLeft] = useState({
-    days: 1,
-    hours: 0,
-    minutes: 0,
-    seconds: 0,
-  });
+  // Dynamic month & year
+  const now = new Date();
+  const currentMonth = now.toLocaleString("default", { month: "long" });
+  const currentYear = now.getFullYear();
 
-  // Countdown timer
+  // Countdown timer until the end of the current month
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        let { days, hours, minutes, seconds } = prev;
-        if (seconds > 0) seconds--;
-        else if (minutes > 0) {
-          minutes--;
-          seconds = 59;
-        } else if (hours > 0) {
-          hours--;
-          minutes = 59;
-          seconds = 59;
-        } else if (days > 0) {
-          days--;
-          hours = 23;
-          minutes = 59;
-          seconds = 59;
-        }
-        return { days, hours, minutes, seconds };
-      });
-    }, 1000);
+    const updateCountdown = () => {
+      const now = new Date();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+      const diff = endOfMonth.getTime() - now.getTime();
+
+      const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      setTimeLeft({ days, hours, minutes, seconds });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch leaderboard for the current month
   useEffect(() => {
-    fetchLeaderboard();
-  }, [fetchLeaderboard]);
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+    fetchLeaderboard(startDate, endDate);
+  }, [fetchLeaderboard, now]);
 
-  const topPlayers =
-    leaderboard?.data && leaderboard.data.length >= 3
-      ? [leaderboard.data[1], leaderboard.data[0], leaderboard.data[2]].filter(Boolean)
-      : [];
+  const topTenPlayers = leaderboard?.data ? leaderboard.data.slice(0, 10) : [];
 
   return (
     <div className="relative flex flex-col min-h-screen text-white overflow-hidden">
@@ -76,12 +72,15 @@ const RoobetPage: React.FC = () => {
 
         <main className="relative z-10 flex-grow w-full px-6 py-12 mx-auto max-w-7xl text-center">
           {/* Header */}
-          <h1 className="text-5xl md:text-6xl font-extrabold text-[#EFA813] mb-4">
-            $1000 ROOBET LEADERBOARD
+          <h1 className="text-5xl md:text-6xl font-extrabold text-[#EFA813] mb-2">
+            $1000 ROOBET MONTHLY LEADERBOARD
           </h1>
+          <p className="text-[#EFA813]/80 mb-2 text-lg">
+            {currentMonth} {currentYear} Edition 🗓️
+          </p>
           <p className="text-[#EFA813]/80 mb-8 text-lg">
             Use code <span className="font-bold text-[#E84D06]">"tacopoju"</span> to compete for top
-            spots and win prizes!
+            spots and win prizes every month!
           </p>
 
           {/* Buttons */}
@@ -107,95 +106,57 @@ const RoobetPage: React.FC = () => {
           {loading && <p className="text-center text-[#EFA813]">Loading leaderboard...</p>}
           {error && <p className="text-center text-[#E84D06]">{error}</p>}
 
-          {/* TOP 3 PLAYERS */}
-          {topPlayers.length === 3 ? (
-            <div className="flex flex-col md:flex-row justify-center items-end gap-10 mb-16">
-              {topPlayers.map((player) => {
-                const rank = player.rankLevel;
-                const translateY =
-                  rank === 1 ? "translate-y-0" : rank === 2 ? "translate-y-6" : "translate-y-10";
-                const borderColor =
-                  rank === 1
-                    ? "border-[#EFA813]"
-                    : rank === 2
-                    ? "border-[#547E25]"
-                    : "border-[#E84D06]";
-                const glowColor =
-                  rank === 1
-                    ? "shadow-[0_0_40px_rgba(239,168,19,0.5)]"
-                    : rank === 2
-                    ? "shadow-[0_0_35px_rgba(84,126,37,0.4)]"
-                    : "shadow-[0_0_35px_rgba(232,77,6,0.4)]";
-                const prizeText =
-                  rank === 1 ? "$125 Prize 🥇" : rank === 2 ? "$75 Prize 🥈" : "$25 Prize 🥉";
-
-                return (
-                  <div
-                    key={player.uid}
-                    className={`relative w-full max-w-[280px] bg-[#0c0c0c]/95 border-2 ${borderColor} rounded-3xl overflow-hidden backdrop-blur-lg ${glowColor} transform ${translateY} transition-all duration-500 hover:scale-105`}
-                  >
-                    <div
-                      className={`absolute top-3 left-1/2 -translate-x-1/2 px-6 py-1.5 rounded-full font-extrabold text-black text-lg tracking-wide ${
-                        rank === 1
-                          ? "bg-gradient-to-r from-[#EFA813] to-[#E84D06]"
-                          : "bg-[#E84D06]"
-                      }`}
-                    >
-                      #{rank}
-                    </div>
-
-                    <div className="p-8 flex flex-col items-center text-center">
-                      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#EFA813]/25 to-transparent border border-[#EFA813]/40 flex items-center justify-center mb-5">
-                        <span className="text-4xl font-extrabold text-[#EFA813] uppercase">
-                          {player.username[0]}
-                        </span>
-                      </div>
-
-                      <h2 className="text-xl font-extrabold text-white mb-1 break-all">
-                        {player.username}
-                      </h2>
-
-                      <p className="text-[#E84D06] font-semibold text-lg mb-1">
-                        ${player.wagered.toLocaleString()}
-                      </p>
-
-                      <p className="text-sm text-[#EFA813]/70 italic mb-4">
-                        Weighted: {player.weightedWagered.toLocaleString()}
-                      </p>
-
-                      <div
-                        className={`font-bold text-base px-6 py-2 rounded-full ${
-                          rank === 1
-                            ? "bg-gradient-to-r from-[#EFA813] to-[#E84D06] text-black"
-                            : "bg-[#EFA813]/10 text-[#EFA813]"
-                        }`}
+          {/* TOP 10 LEADERBOARD */}
+          {topTenPlayers.length > 0 ? (
+            <div className="overflow-x-auto bg-[#0a0a0a]/80 backdrop-blur-md rounded-2xl border border-[#547E25] shadow-lg mb-16">
+              <table className="w-full border-collapse text-left">
+                <thead className="bg-[#EFA813] text-[#040704] uppercase text-sm">
+                  <tr>
+                    <th className="p-4">Rank</th>
+                    <th className="p-4">Player</th>
+                    <th className="p-4">Wagered</th>
+                    <th className="p-4">Weighted</th>
+                    <th className="p-4">Prize</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {topTenPlayers.map((player) => {
+                    const rank = player.rankLevel;
+                    let prize = "$0";
+                    if (rank === 1) prize = "$125 🥇";
+                    else if (rank === 2) prize = "$75 🥈";
+                    else if (rank === 3) prize = "$25 🥉";
+                    else if (rank === 4 || rank === 5) prize = "$12.5";
+                    return (
+                      <tr
+                        key={player.uid}
+                        className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/20 transition-all"
                       >
-                        {prizeText}
-                      </div>
-                    </div>
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 h-[5px] ${
-                        rank === 1
-                          ? "bg-gradient-to-r from-[#EFA813] via-[#E84D06] to-[#EFA813]"
-                          : "bg-gradient-to-r from-[#E84D06]/70 to-transparent"
-                      }`}
-                    />
-                  </div>
-                );
-              })}
+                        <td className="p-4 font-bold text-[#EFA813] text-center">#{rank}</td>
+                        <td className="p-4 font-semibold break-all">{player.username}</td>
+                        <td className="p-4">${player.wagered.toLocaleString()}</td>
+                        <td className="p-4 text-[#EFA813]/80">{player.weightedWagered.toLocaleString()}</td>
+                        <td className="p-4 text-[#547E25] font-semibold">{prize}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           ) : (
             !loading &&
             !error && (
               <p className="text-center text-[#EFA813]/70 mb-12">
-                Not enough players yet to display the top 3.
+                No players yet for this month.
               </p>
             )
           )}
 
           {/* Countdown Timer */}
           <div className="mb-12">
-            <h3 className="text-2xl text-[#EFA813] font-bold mb-2">Leaderboard Ends In</h3>
+            <h3 className="text-2xl text-[#EFA813] font-bold mb-2">
+              Leaderboard Ends In
+            </h3>
             <div className="flex justify-center gap-4 text-2xl font-extrabold text-[#E84D06]">
               <TimerBox label="Days" value={timeLeft.days} />
               <TimerBox label="Hours" value={timeLeft.hours} />
@@ -203,39 +164,6 @@ const RoobetPage: React.FC = () => {
               <TimerBox label="Seconds" value={timeLeft.seconds} />
             </div>
           </div>
-
-          {/* Leaderboard Table */}
-          {leaderboard?.data?.length > 3 && (
-            <div className="overflow-x-auto bg-[#0a0a0a]/80 backdrop-blur-md rounded-2xl border border-[#547E25] shadow-lg">
-              <table className="w-full border-collapse text-left">
-                <thead className="bg-[#EFA813] text-[#040704] uppercase text-sm">
-                  <tr>
-                    <th className="p-4">Rank</th>
-                    <th className="p-4">Player</th>
-                    <th className="p-4">Wagered</th>
-                    <th className="p-4">Prize</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {leaderboard.data.slice(3).map((player) => (
-                    <tr
-                      key={player.uid}
-                      className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/20 transition-all"
-                    >
-                      <td className="p-4 font-bold text-[#EFA813]">#{player.rankLevel}</td>
-                      <td className="p-4 font-semibold">{player.username}</td>
-                      <td className="p-4">${player.wagered.toLocaleString()}</td>
-                      <td className="p-4 text-[#547E25] font-semibold">
-                        {player.rankLevel === 4 && "$12.5"}
-                        {player.rankLevel === 5 && "$12.5"}
-                        {player.rankLevel > 5 && "$0.00"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
         </main>
 
         <Footer />
@@ -249,7 +177,7 @@ const RoobetPage: React.FC = () => {
               How the Leaderboard Works
             </DialogTitle>
             <DialogDescription className="text-[#EFA813]/80 text-center mb-4">
-              Weighted wagers based on RTP determine your leaderboard score.
+              Weighted wagers based on RTP determine your monthly leaderboard score.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-[#fffefe]/90">
