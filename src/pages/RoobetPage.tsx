@@ -165,7 +165,8 @@ const RoobetPage: React.FC = () => {
     // 💰 Bonus: +$15 for every $10,000 wagered
     const bonus = Math.floor(player.wagered / 10000) * 15;
 
-    const totalPrize = (basePrize + bonus).toFixed(3); // Keep same precision style
+    const totalPrize = basePrize + bonus;
+
 
     return (
       <tr
