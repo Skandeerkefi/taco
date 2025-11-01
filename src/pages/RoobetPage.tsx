@@ -75,7 +75,7 @@ const RoobetPage: React.FC = () => {
         <main className="relative z-10 flex-grow w-full px-6 py-12 mx-auto max-w-7xl text-center">
           {/* Header */}
           <h1 className="text-5xl md:text-6xl font-extrabold text-[#EFA813] mb-2">
-            $1000 ROOBET MONTHLY LEADERBOARD
+            $750 ROOBET MONTHLY LEADERBOARD
           </h1>
           <p className="text-[#EFA813]/80 mb-2 text-lg">
             {currentMonth} {currentYear} Edition 🗓️
@@ -122,27 +122,70 @@ const RoobetPage: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {topTenPlayers.map((player) => {
-                    const rank = player.rankLevel;
-                    let prize = "$0";
-                    if (rank === 1) prize = "$125 🥇";
-                    else if (rank === 2) prize = "$75 🥈";
-                    else if (rank === 3) prize = "$25 🥉";
-                    else if (rank === 4 || rank === 5) prize = "$12.5";
-                    return (
-                      <tr
-                        key={player.uid}
-                        className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/20 transition-all"
-                      >
-                        <td className="p-4 font-bold text-[#EFA813] text-center">#{rank}</td>
-                        <td className="p-4 font-semibold break-all">{player.username}</td>
-                        <td className="p-4">${player.wagered.toLocaleString()}</td>
-                        <td className="p-4 text-[#EFA813]/80">{player.weightedWagered.toLocaleString()}</td>
-                        <td className="p-4 text-[#547E25] font-semibold">{prize}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
+  {topTenPlayers.map((player) => {
+    const rank = player.rankLevel;
+    let basePrize = 0;
+
+    // 🏆 Base prize by rank
+    switch (rank) {
+      case 1:
+        basePrize = 1.325;
+        break;
+      case 2:
+        basePrize = 2.175;
+        break;
+      case 3:
+        basePrize = 3.9;
+        break;
+      case 4:
+        basePrize = 4.45;
+        break;
+      case 5:
+        basePrize = 5.3;
+        break;
+      case 6:
+        basePrize = 6.25;
+        break;
+      case 7:
+        basePrize = 7.2;
+        break;
+      case 8:
+        basePrize = 8.2;
+        break;
+      case 9:
+        basePrize = 9.1;
+        break;
+      case 10:
+        basePrize = 10.1;
+        break;
+      default:
+        basePrize = 0;
+    }
+
+    // 💰 Bonus: +$15 for every $10,000 wagered
+    const bonus = Math.floor(player.wagered / 10000) * 15;
+
+    const totalPrize = (basePrize + bonus).toFixed(3); // Keep same precision style
+
+    return (
+      <tr
+        key={player.uid}
+        className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/20 transition-all"
+      >
+        <td className="p-4 font-bold text-[#EFA813] text-center">#{rank}</td>
+        <td className="p-4 font-semibold break-all">{player.username}</td>
+        <td className="p-4">${player.wagered.toLocaleString()}</td>
+        <td className="p-4 text-[#EFA813]/80">
+          {player.weightedWagered.toLocaleString()}
+        </td>
+        <td className="p-4 text-[#547E25] font-semibold">
+          ${totalPrize}
+        </td>
+      </tr>
+    );
+  })}
+</tbody>
+
               </table>
             </div>
           ) : (
