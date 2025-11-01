@@ -129,34 +129,34 @@ const RoobetPage: React.FC = () => {
     // 🏆 Base prize by rank
     switch (rank) {
       case 1:
-        basePrize = 1.325;
+        basePrize = 325;
         break;
       case 2:
-        basePrize = 2.175;
+        basePrize = 175;
         break;
       case 3:
-        basePrize = 3.9;
+        basePrize = 90;
         break;
       case 4:
-        basePrize = 4.45;
+        basePrize = 45;
         break;
       case 5:
-        basePrize = 5.3;
+        basePrize = 30;
         break;
       case 6:
-        basePrize = 6.25;
+        basePrize = 25;
         break;
       case 7:
-        basePrize = 7.2;
+        basePrize = 20;
         break;
       case 8:
-        basePrize = 8.2;
+        basePrize = 20;
         break;
       case 9:
-        basePrize = 9.1;
+        basePrize = 10;
         break;
       case 10:
-        basePrize = 10.1;
+        basePrize = 10;
         break;
       default:
         basePrize = 0;
