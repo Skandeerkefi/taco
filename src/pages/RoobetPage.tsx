@@ -46,12 +46,11 @@ const RoobetPage: React.FC = () => {
 
   // Fetch leaderboard for the current month
   useEffect(() => {
-  const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
-  const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
-  fetchLeaderboard(startDate, endDate);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []); // ✅ fetch only once when page loads
-
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split("T")[0];
+    const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split("T")[0];
+    fetchLeaderboard(startDate, endDate);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // ✅ fetch only once when page loads
 
   const topTenPlayers = leaderboard?.data ? leaderboard.data.slice(0, 10) : [];
 
@@ -110,77 +109,84 @@ const RoobetPage: React.FC = () => {
 
           {/* TOP 10 LEADERBOARD */}
           {topTenPlayers.length > 0 ? (
-            <div className="overflow-x-auto bg-[#0a0a0a]/80 backdrop-blur-md rounded-2xl border border-[#547E25] shadow-lg mb-16">
-  <table className="w-full border-collapse text-sm md:text-base table-fixed">
-    <thead className="bg-[#EFA813] text-[#040704] uppercase">
-      <tr>
-        <th className="w-[10%] p-4 text-center">Rank</th>
-        <th className="w-[30%] p-4 text-left">Player</th>
-        <th className="w-[20%] p-4 text-right">Wagered</th>
-        <th className="w-[20%] p-4 text-right">Weighted</th>
-        <th className="w-[20%] p-4 text-right">Prize</th>
-      </tr>
-    </thead>
-    <tbody>
-      {topTenPlayers.map((player) => {
-        const rank = player.rankLevel;
-        let basePrize = 0;
+            <>
+              <div className="overflow-x-auto bg-[#0a0a0a]/80 backdrop-blur-md rounded-2xl border border-[#547E25] shadow-lg mb-6">
+                <table className="w-full border-collapse text-sm md:text-base table-fixed">
+                  <thead className="bg-[#EFA813] text-[#040704] uppercase">
+                    <tr>
+                      <th className="w-[10%] p-4 text-center">Rank</th>
+                      <th className="w-[30%] p-4 text-left">Player</th>
+                      <th className="w-[20%] p-4 text-right">Wagered</th>
+                      <th className="w-[20%] p-4 text-right">Weighted</th>
+                      <th className="w-[20%] p-4 text-right">Prize</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topTenPlayers.map((player) => {
+                      const rank = player.rankLevel;
+                      let basePrize = 0;
 
-        switch (rank) {
-          case 1:
-            basePrize = 325;
-            break;
-          case 2:
-            basePrize = 175;
-            break;
-          case 3:
-            basePrize = 90;
-            break;
-          case 4:
-            basePrize = 45;
-            break;
-          case 5:
-            basePrize = 30;
-            break;
-          case 6:
-            basePrize = 25;
-            break;
-          case 7:
-          case 8:
-            basePrize = 20;
-            break;
-          case 9:
-          case 10:
-            basePrize = 10;
-            break;
-          default:
-            basePrize = 0;
-        }
+                      switch (rank) {
+                        case 1:
+                          basePrize = 325;
+                          break;
+                        case 2:
+                          basePrize = 175;
+                          break;
+                        case 3:
+                          basePrize = 90;
+                          break;
+                        case 4:
+                          basePrize = 45;
+                          break;
+                        case 5:
+                          basePrize = 30;
+                          break;
+                        case 6:
+                          basePrize = 25;
+                          break;
+                        case 7:
+                        case 8:
+                          basePrize = 20;
+                          break;
+                        case 9:
+                        case 10:
+                          basePrize = 10;
+                          break;
+                        default:
+                          basePrize = 0;
+                      }
 
-        const bonus = Math.floor(player.wagered / 10000) * 15;
-        const totalPrize = basePrize + bonus;
+                      const bonus = Math.floor(player.wagered / 10000) * 15;
+                      const totalPrize = basePrize + bonus;
 
-        return (
-          <tr
-            key={player.uid}
-            className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/10 transition-all"
-          >
-            <td className="p-4 text-center font-bold text-[#EFA813]">#{rank}</td>
-            <td className="p-4 font-semibold text-left break-all">{player.username}</td>
-            <td className="p-4 text-right">${player.wagered.toLocaleString()}</td>
-            <td className="p-4 text-right text-[#EFA813]/80">
-              {player.weightedWagered.toLocaleString()}
-            </td>
-            <td className="p-4 text-right text-[#547E25] font-semibold">
-              ${totalPrize}
-            </td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-</div>
+                      return (
+                        <tr
+                          key={player.uid}
+                          className="border-t border-[#E84D06]/20 hover:bg-[#E84D06]/10 transition-all"
+                        >
+                          <td className="p-4 text-center font-bold text-[#EFA813]">#{rank}</td>
+                          <td className="p-4 font-semibold text-left break-all">{player.username}</td>
+                          <td className="p-4 text-right">${player.wagered.toLocaleString()}</td>
+                          <td className="p-4 text-right text-[#EFA813]/80">
+                            {player.weightedWagered.toLocaleString()}
+                          </td>
+                          <td className="p-4 text-right text-[#547E25] font-semibold">
+                            ${totalPrize}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
 
+              {/* 💰 Bonus Info */}
+              <div className="text-center bg-[#E84D06]/10 border border-[#EFA813]/40 rounded-xl py-3 px-4 mt-2 mb-12 text-[#EFA813] font-semibold shadow-lg">
+                💰 Earn an extra <span className="text-[#E84D06]">+ $15</span> for every{" "}
+                <span className="text-[#EFA813]">$10,000</span> wagered!
+              </div>
+            </>
           ) : (
             !loading &&
             !error && (
