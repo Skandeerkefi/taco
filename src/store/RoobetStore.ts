@@ -24,7 +24,12 @@ interface RoobetStore {
 }
 
 let lastFetchTime = 0;
-const FETCH_COOLDOWN = 60 * 1000; // 1 minute cooldown between API calls
+const FETCH_COOLDOWN = 60 * 1000; // 1 minute
+
+// Helper: Always create ISO dates in **pure UTC** (no timezone shift)
+function toISODateUTC(year: number, month: number, day: number) {
+  return new Date(Date.UTC(year, month, day)).toISOString().split("T")[0];
+}
 
 export const useRoobetStore = create<RoobetStore>((set) => ({
   leaderboard: null,
@@ -33,24 +38,25 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
 
   fetchLeaderboard: async (startDate?: string, endDate?: string) => {
     const now = Date.now();
-    if (now - lastFetchTime < FETCH_COOLDOWN) return; // prevent rapid refetching
+    if (now - lastFetchTime < FETCH_COOLDOWN) return;
     lastFetchTime = now;
 
     set({ loading: true, error: null });
 
     try {
-      // 🗓️ Always get current month range
+      // Always calculate month range using UTC
       const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth();
+      const year = today.getUTCFullYear();
+      const month = today.getUTCMonth();
 
-      const firstDay = new Date(Date.UTC(year, month, 1)).toISOString().split("T")[0];
-      const lastDay = new Date(Date.UTC(year, month + 1, 0)).toISOString().split("T")[0];
+      const firstDay = toISODateUTC(year, month, 1);       // YYYY-MM-01
+      const lastDay = toISODateUTC(year, month + 1, 0);    // last day of month
 
       const start = startDate || firstDay;
       const end = endDate || lastDay;
 
       const url = `https://tacodata-production.up.railway.app/api/leaderboard/${start}/${end}`;
+
       const response = await axios.get(url, { timeout: 8000 });
 
       if (!response.data || !response.data.data) {
@@ -73,12 +79,14 @@ export const useRoobetStore = create<RoobetStore>((set) => ({
       set({ leaderboard: updatedData, loading: false });
     } catch (err: any) {
       let message = "Failed to fetch leaderboard";
-      if (err.response?.status === 429)
-        message = "Too many requests — please wait a minute before retrying.";
-      else if (err.response?.status === 500)
-        message = "Server error — please try again later.";
-      else if (err.code === "ECONNABORTED")
-        message = "Request timed out — server may be slow.";
+
+      if (err.response?.status === 429) {
+        message = "Too many requests — please wait a minute.";
+      } else if (err.response?.status === 500) {
+        message = "Server error — try again later.";
+      } else if (err.code === "ECONNABORTED") {
+        message = "Request timed out — server slow.";
+      }
 
       set({ error: message, loading: false });
     }
